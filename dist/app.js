@@ -9049,7 +9049,7 @@
 
 	var _Root2 = _interopRequireDefault(_Root);
 
-	var _configureStore = __webpack_require__(963);
+	var _configureStore = __webpack_require__(965);
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
@@ -36066,6 +36066,10 @@
 
 	var _DashboardView2 = _interopRequireDefault(_DashboardView);
 
+	var _RegisterView = __webpack_require__(963);
+
+	var _RegisterView2 = _interopRequireDefault(_RegisterView);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = _react2.default.createElement(
@@ -36073,7 +36077,8 @@
 	    { component: _CoreLayout2.default, path: '/' },
 	    _react2.default.createElement(_reactRouter.IndexRoute, { component: _PublishingApp2.default, name: 'home' }),
 	    _react2.default.createElement(_reactRouter.Route, { component: _LoginView2.default, path: 'login', name: 'login' }),
-	    _react2.default.createElement(_reactRouter.Route, { component: _DashboardView2.default, path: 'dashboard', name: 'dashboard' })
+	    _react2.default.createElement(_reactRouter.Route, { component: _DashboardView2.default, path: 'dashboard', name: 'dashboard' }),
+	    _react2.default.createElement(_reactRouter.Route, { component: _RegisterView2.default, path: 'register', name: 'register' })
 	);
 
 /***/ },
@@ -36120,7 +36125,13 @@
 	                _react2.default.createElement(
 	                    'span',
 	                    null,
-	                    'Links: ',
+	                    'Links:',
+	                    _react2.default.createElement(
+	                        _reactRouter.Link,
+	                        { to: '/register' },
+	                        'Register'
+	                    ),
+	                    ' |',
 	                    _react2.default.createElement(
 	                        _reactRouter.Link,
 	                        { to: '/login' },
@@ -98049,13 +98060,276 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(331);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _falcor = __webpack_require__(579);
+
+	var _falcor2 = _interopRequireDefault(_falcor);
+
+	var _falcorModel = __webpack_require__(578);
+
+	var _falcorModel2 = _interopRequireDefault(_falcorModel);
+
+	var _reactRedux = __webpack_require__(505);
+
+	var _redux = __webpack_require__(521);
+
+	var _RegisterForm = __webpack_require__(964);
+
+	var _materialUi = __webpack_require__(747);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var mapStateToProps = function mapStateToProps(state) {
+	    return _extends({}, state);
+	};
+
+	//Add reducers here
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	    return {};
+	};
+
+	var RegisterView = function (_React$Component) {
+	    _inherits(RegisterView, _React$Component);
+
+	    function RegisterView(props) {
+	        _classCallCheck(this, RegisterView);
+
+	        var _this = _possibleConstructorReturn(this, (RegisterView.__proto__ || Object.getPrototypeOf(RegisterView)).call(this, props));
+
+	        _this.register = _this.register.bind(_this);
+	        _this.state = {
+	            error: null
+	        };
+	        return _this;
+	    }
+
+	    _createClass(RegisterView, [{
+	        key: 'register',
+	        value: function () {
+	            var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(newUserModel) {
+	                var newUserId, errorRes;
+	                return regeneratorRuntime.wrap(function _callee$(_context) {
+	                    while (1) {
+	                        switch (_context.prev = _context.next) {
+	                            case 0:
+	                                console.info('newUserModel', newUserModel);
+
+	                                _context.next = 3;
+	                                return _falcorModel2.default.call(['register'], [newUserModel]).then(function (result) {
+	                                    return result;
+	                                });
+
+	                            case 3:
+	                                _context.next = 5;
+	                                return _falcorModel2.default.getValue(['register', 'newUserId']);
+
+	                            case 5:
+	                                newUserId = _context.sent;
+
+	                                if (!(newUserId === 'INVALID')) {
+	                                    _context.next = 12;
+	                                    break;
+	                                }
+
+	                                _context.next = 9;
+	                                return _falcorModel2.default.getValue('register.error');
+
+	                            case 9:
+	                                errorRes = _context.sent;
+
+
+	                                this.setState({ error: errorRes });
+
+	                                return _context.abrupt('return');
+
+	                            case 12:
+
+	                                this.props.history.pushState(null, '/login');
+
+	                            case 13:
+	                            case 'end':
+	                                return _context.stop();
+	                        }
+	                    }
+	                }, _callee, this);
+	            }));
+
+	            function register(_x) {
+	                return _ref.apply(this, arguments);
+	            }
+
+	            return register;
+	        }()
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    'Register'
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { style: { maxWidth: 450, margin: '0 auto' } },
+	                    _react2.default.createElement(_RegisterForm.RegisterForm, { onSubmit: this.register })
+	                ),
+	                _react2.default.createElement(_materialUi.Snackbar, { autoHideDuration: 4000,
+	                    open: !!this.state.error,
+	                    message: this.state.error || '',
+	                    onRequestClose: function onRequestClose() {
+	                        return null;
+	                    }
+	                })
+	            );
+	        }
+	    }]);
+
+	    return RegisterView;
+	}(_react2.default.Component);
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(RegisterView);
+
+/***/ },
+/* 964 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	exports.RegisterForm = undefined;
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(331);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _formsyReact = __webpack_require__(740);
+
+	var _formsyReact2 = _interopRequireDefault(_formsyReact);
+
+	var _materialUi = __webpack_require__(747);
+
+	var _DefaultInput = __webpack_require__(961);
+
+	var _DefaultInput2 = _interopRequireDefault(_DefaultInput);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var RegisterForm = exports.RegisterForm = function (_React$Component) {
+	    _inherits(RegisterForm, _React$Component);
+
+	    function RegisterForm() {
+	        _classCallCheck(this, RegisterForm);
+
+	        return _possibleConstructorReturn(this, (RegisterForm.__proto__ || Object.getPrototypeOf(RegisterForm)).call(this));
+	    }
+
+	    _createClass(RegisterForm, [{
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                _formsyReact2.default.Form,
+	                { onSubmit: this.props.onSubmit },
+	                _react2.default.createElement(
+	                    _materialUi.Paper,
+	                    { zDepth: 1, style: { padding: 32 } },
+	                    _react2.default.createElement(
+	                        'h3',
+	                        null,
+	                        'Registration Form'
+	                    ),
+	                    _react2.default.createElement(_DefaultInput2.default, {
+	                        onChange: function onChange(event) {},
+	                        name: 'username',
+	                        title: 'Username',
+	                        required: true
+	                    }),
+	                    _react2.default.createElement(_DefaultInput2.default, {
+	                        onChange: function onChange(event) {},
+	                        name: 'firstName',
+	                        title: 'First Name',
+	                        required: true
+	                    }),
+	                    _react2.default.createElement(_DefaultInput2.default, {
+	                        onChange: function onChange(event) {},
+	                        name: 'lastName',
+	                        title: 'Last Name',
+	                        required: true
+	                    }),
+	                    _react2.default.createElement(_DefaultInput2.default, {
+	                        onChange: function onChange(event) {},
+	                        name: 'email',
+	                        title: 'Email',
+	                        required: true
+	                    }),
+	                    _react2.default.createElement(_DefaultInput2.default, {
+	                        onChange: function onChange(event) {},
+	                        name: 'password',
+	                        title: 'Password',
+	                        required: true
+	                    }),
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { marginTop: 24 } },
+	                        _react2.default.createElement(_materialUi.RaisedButton, {
+	                            secondary: true,
+	                            type: 'submit',
+	                            style: { margin: '0 auto', display: 'block', width: 150 },
+	                            label: 'Register'
+	                        })
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return RegisterForm;
+	}(_react2.default.Component);
+
+/***/ },
+/* 965 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 	exports.default = configureStore;
 
-	var _reducers = __webpack_require__(964);
+	var _reducers = __webpack_require__(966);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _reduxThunk = __webpack_require__(966);
+	var _reduxThunk = __webpack_require__(968);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
@@ -98077,7 +98351,7 @@
 	}
 
 /***/ },
-/* 964 */
+/* 966 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -98090,7 +98364,7 @@
 
 	var _reduxSimpleRouter = __webpack_require__(503);
 
-	var _article = __webpack_require__(965);
+	var _article = __webpack_require__(967);
 
 	var _article2 = _interopRequireDefault(_article);
 
@@ -98102,7 +98376,7 @@
 	});
 
 /***/ },
-/* 965 */
+/* 967 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -98127,7 +98401,7 @@
 	exports.default = article;
 
 /***/ },
-/* 966 */
+/* 968 */
 /***/ function(module, exports) {
 
 	'use strict';
