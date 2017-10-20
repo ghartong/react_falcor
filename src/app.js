@@ -1,0 +1,18 @@
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import article from './reducers/article'
+import PublishingApp from './layouts/PublishingApp'
+
+const store = createStore(
+    article, 
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+)
+
+render(
+    <Provider store={store}>
+        <PublishingApp />
+    </Provider>,
+    document.getElementById('publishingAppRoot')
+)
