@@ -15,11 +15,13 @@ class LogoutView extends React.Component {
     }
 
     render() {
-        <div style={{width: 400, margin: 'auto'}}>
-            <Paper zDepth={3} style={{padding: 32, margin: 32}}>
-                Logout successful.
-            </Paper>
-        </div>
+        return (
+            <div style={{width: 400, margin: 'auto'}}>
+                <Paper zDepth={3} style={{padding: 32, margin: 32}}>
+                    Logout successful.
+                </Paper>
+            </div>
+        )
     }
 }
 

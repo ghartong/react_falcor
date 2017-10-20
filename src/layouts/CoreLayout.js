@@ -5,10 +5,27 @@ import getMuiTheme from 'material-ui/lib/styles/getMuiTheme'
 import AppBar from 'material-ui/lib/app-bar'
 import RaisedButton from 'material-ui/lib/raised-button'
 import ActionHome from 'material-ui/lib/svg-icons/action/home'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+import articleActions from '../actions/article'
+
+const mapStateToProps = (state) => ({
+    ...state
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    articleActions: bindActionCreators(articleActions, dispatch)
+})
 
 class CoreLayout extends React.Component {
     static propTypes = {
         children: React.PropTypes.element
+    }
+
+    componentWillMount() {
+        if (typeof window !== 'undefined' && !this.props.article.get) {
+            this.props.articleActions.articlesList(this.props.article)
+        }
     }
 
     render () {
@@ -21,16 +38,33 @@ class CoreLayout extends React.Component {
             paddingTop: 5
         }
 
-        let menuLinksJSX = (
-            <span>
-                <Link to='/register'>
-                    <RaisedButton label='Register' style={buttonStyle} />
-                </Link>
-                <Link to='/login'>
-                    <RaisedButton label='Login' style={buttonStyle} />
-                </Link>
-            </span>
-        )
+        let menuLinksJSX
+        let userIsLoggedIn = typeof localStorage !== 'undefined' &&
+            localStorage.token && this.props.routes[1].name !== 'logout'
+
+        if (userIsLoggedIn) {
+            menuLinksJSX = (
+                <span>
+                    <Link to='/dashboard'>
+                        <RaisedButton label='Dashboard' style={buttonStyle} />
+                    </Link>
+                    <Link to='/logout'>
+                        <RaisedButton label='Logout' style={buttonStyle} />
+                    </Link>
+                </span>
+            )
+        } else {
+            menuLinksJSX = (
+                    <span>
+                    <Link to='/register'>
+                        <RaisedButton label='Register' style={buttonStyle} />
+                    </Link>
+                    <Link to='/login'>
+                        <RaisedButton label='Login' style={buttonStyle} />
+                    </Link>
+                </span>
+            )
+        }
 
         let homePageButtonJSX = (
             <Link to='/'>
@@ -51,4 +85,7 @@ class CoreLayout extends React.Component {
     }
 }
 
-export default themeDecorator(getMuiTheme(null, {userAgent: 'all'}))(CoreLayout)
+const muiCoreLayout = themeDecorator(getMuiTheme(null, {
+    userAgent: 'all'
+}))(CoreLayout)
+export default connect(mapStateToProps, mapDispatchToProps)(muiCoreLayout)
