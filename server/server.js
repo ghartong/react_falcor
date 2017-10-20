@@ -35,9 +35,12 @@ app.use('/model.json', falcorExpress.dataSourceRoute((req, res) => {
     return new falcorRouter(routes)
 }))
 
-let handleServerSideRender = (req, res, next) =>{
+let handleServerSideRender = async (req, res, next) =>{
     try {
-        let initMOCKstore = fetchServerSide() //mocked for now
+        let articlesArray = await fetchServerSide()
+        let initMOCKstore = {
+            article: articlesArray
+        }
 
         // Create a new Redux store instance
         const store = createStore(rootReducer, initMOCKstore)
@@ -88,7 +91,6 @@ return `<!doctype html>
         <title>Publishing App Server Side Rendering</title>
     </head>
     <body>
-        <h1>Server side publishing app</h1>
         <div id="publishingAppRoot">${html}</div>
         <script>
             window.__INITIAL_STATE__ = ${JSON.stringify(initialState)}

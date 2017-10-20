@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import falcorModel from '../falcorModel'
 import { bindActionCreators } from 'redux'
 import articleActions from '../actions/article'
+import ArticleCard from '../components/ArticleCard'
 
 const mapStateToProps = (state) => ({
     ...state
@@ -31,7 +32,7 @@ class PublishingApp extends React.Component {
         let articles = await falcorModel
             .get(
                 ['articles', {from: 0, to: articlesLength-1},
-                ['id', 'articleTitle', 'articleContent']]
+                ['_id', 'articleTitle', 'articleContent']]
             )
             .then((articlesResponse) => articlesResponse.json.articles)
         
@@ -46,16 +47,17 @@ class PublishingApp extends React.Component {
 
             const currentArticleJSX = (
                 <div key={articleKey}>
-                    <h2>{articleDetails.articleTitle}</h2>
-                    <h3>{articleDetails.articleContent}</h3>
+                    <ArticleCard
+                        title={articleDetails.articleTitle}
+                        content={articleDetails.articleContent}
+                    />
                 </div>
             )
             articlesJSX.push(currentArticleJSX)
         }
 
         return (
-            <div>
-                <h1>Our publishing app</h1>
+            <div style={{height: '100%', width: '75%', margin: 'auto'}}>
                 {articlesJSX}
             </div>
         )
