@@ -1,18 +1,21 @@
 import React from 'react'
-import { render } from 'react-dom'
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import article from './reducers/article'
-import PublishingApp from './layouts/PublishingApp'
+import ReactDOM from 'react-dom'
+import createBrowserHistory from 'history/lib/createBrowserHistory'
+import {syncReduxAndRouter} from 'redux-simple-router'
+import Root from './containers/Root'
+import configureStore from './store/configureStore'
 
-const store = createStore(
-    article, 
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+const target = document.getElementById('publishingAppRoot')
+const history = createBrowserHistory()
+
+export const store = configureStore(
+    window.__INITIAL_STATE__
 )
 
-render(
-    <Provider store={store}>
-        <PublishingApp />
-    </Provider>,
-    document.getElementById('publishingAppRoot')
+syncReduxAndRouter(history, store)
+
+const node = (
+    <Root history={history} store={store} />
 )
+
+ReactDOM.render(node, target)

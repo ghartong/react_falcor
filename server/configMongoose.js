@@ -15,4 +15,20 @@ const articleSchema = {
 
 const Article = mongoose.model('Article', articleSchema, 'articles')
 
-export default {Article}
+const userSchema = {
+    'username': String,
+    'password': String,
+    'firstName': String,
+    'lastName': String,
+    'email': String,
+    'role': String,
+    'verified': Boolean,
+    'imageUrl': String
+}
+
+const User = mongoose.model('User', userSchema, 'pubUsers')
+
+export default {
+    Article,
+    User
+}
