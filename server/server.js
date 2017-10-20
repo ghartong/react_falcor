@@ -10,9 +10,12 @@ import routes from './routes'
 const app = express()
 app.server = http.createServer(app)
 
+// CORS - 3rd party middleware
 app.use(cors())
 
-app.use(bodyParser.json({extend: false}))
+// This is required by falcor-express middleware to work correctly with falcor-browser
+app.use(bodyParser.json({extended: false}))
+app.use(bodyParser.urlencoded({extended: false}))
 
 let cache = {
     articles: [

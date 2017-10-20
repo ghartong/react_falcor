@@ -1,3 +1,5 @@
+//in cli:
+// mongoimport --db local --collection articles --jsonArray initData.js --host=127.0.0.1
 [
     {
         articleId: '987654',
