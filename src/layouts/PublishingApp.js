@@ -18,7 +18,9 @@ class PublishingApp extends React.Component {
     }
 
     componentWillMount() {
-        this._fetch()
+        if(typeof window !== 'undefined') {
+            this._fetch() // if we are server side, no fetching
+        }
     }
 
     async _fetch() {

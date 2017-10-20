@@ -1,5 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router'
+import themeDecorator from 'material-ui/lib/styles/theme-decorator'
+import getMuiTheme from 'material-ui/lib/styles/getMuiTheme'
 
 class CoreLayout extends React.Component {
     static propTypes = {
@@ -22,4 +24,4 @@ class CoreLayout extends React.Component {
     }
 }
 
-export default CoreLayout
+export default themeDecorator(getMuiTheme(null, {userAgent: 'all'}))(CoreLayout)
