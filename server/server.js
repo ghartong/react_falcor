@@ -32,7 +32,9 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use('/static', express.static('dist'))
 
 app.use('/model.json', falcorExpress.dataSourceRoute((req, res) => {
-    return new falcorRouter(routes)
+    return new falcorRouter(
+        [].concat(routes(req, res))
+    )
 }))
 
 let handleServerSideRender = async (req, res, next) =>{

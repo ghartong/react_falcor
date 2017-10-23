@@ -32,9 +32,13 @@ class PublishingApp extends React.Component {
         let articles = await falcorModel
             .get(
                 ['articles', {from: 0, to: articlesLength-1},
-                ['_id', 'articleTitle', 'articleContent']]
+                ['_id', 'articleTitle', 'articleContent', 'articleContentJSON']]
             )
-            .then((articlesResponse) => articlesResponse.json.articles)
+            .then((articlesResponse) => {
+                articlesResponse.json.articles
+            }).catch(e => {
+                return 500
+            })
         
         this.props.articleActions.articlesList(articles)
     }

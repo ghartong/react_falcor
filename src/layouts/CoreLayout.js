@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import themeDecorator from 'material-ui/lib/styles/theme-decorator'
 import getMuiTheme from 'material-ui/lib/styles/getMuiTheme'
 import AppBar from 'material-ui/lib/app-bar'
+import Snackbar from 'material-ui/lib/snackbar'
 import RaisedButton from 'material-ui/lib/raised-button'
 import ActionHome from 'material-ui/lib/svg-icons/action/home'
 import {connect} from 'react-redux'
@@ -17,7 +18,23 @@ const mapDispatchToProps = (dispatch) => ({
     articleActions: bindActionCreators(articleActions, dispatch)
 })
 
+let errorFuncUtil = (errMsg, errPath) => {
+
+}
+export { errorFuncUtil as errorFunc }
+
 class CoreLayout extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            errorValue: null
+        }
+
+        if (typeof window !== 'undefined') {
+            errorFuncUtil = this.handleFalcorErrors.bind(this)
+        }
+    }
+
     static propTypes = {
         children: React.PropTypes.element
     }
@@ -28,7 +45,22 @@ class CoreLayout extends React.Component {
         }
     }
 
+    handleFalcorErrors(errMsg, errPath) {
+        let errorValue = `Error: ${errMsg} (path ${JSON.stringify(errPath)})`
+        this.setState({errorValue})
+    }
+
     render () {
+        let errorSnackbarJSX = null
+        if (this.state.errorValue) {
+            errorSnackbarJSX = <Snackbar 
+                open={true} 
+                message={this.state.errorValue}
+                autoHideDuration={8000}
+                onRequestClose={ () => console.log('You can add custom onclose code')}
+            />
+        }
+
         const buttonStyle = {
             margin: 5
         }
@@ -74,6 +106,7 @@ class CoreLayout extends React.Component {
 
         return (
             <div>
+                {errorSnackbarJSX}
                 <AppBar
                     title='Publishing App'
                     iconElementLeft={homePageButtonJSX}

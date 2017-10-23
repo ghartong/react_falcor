@@ -1,5 +1,7 @@
 import mongoose from 'mongoose'
 
+const Schema = mongoose.Schema
+
 const conf = {
     hostname: process.env.MONGO_HOSTNAME || 'localhost',
     port: process.env.MONGO_PORT || 27017,
@@ -8,10 +10,14 @@ const conf = {
 
 mongoose.connect(`mongodb://${conf.hostname}:${conf.port}/${conf.env}`)
 
-const articleSchema = {
+const articleSchema = new Schema({
     articleTitle: String,
-    articleContent: String
-}
+    articleContent: String,
+    articleContentJSON: Object
+},
+{
+    minimize: false
+})
 
 const Article = mongoose.model('Article', articleSchema, 'articles')
 
