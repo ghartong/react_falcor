@@ -32,7 +32,7 @@ class PublishingApp extends React.Component {
         let articles = await falcorModel
             .get(
                 ['articles', {from: 0, to: articlesLength-1},
-                ['_id', 'articleTitle', 'articleContent', 'articleContentJSON', 'articlePicUrl']]
+                ['_id', 'articleTitle', 'articleSubTitle', 'articleContent', 'articleContentJSON', 'articlePicUrl']]
             )
             .then((articlesResponse) => {
                 articlesResponse.json.articles
@@ -55,6 +55,7 @@ class PublishingApp extends React.Component {
                 <div key={articleKey}>
                     <ArticleCard
                         title={articleDetails.articleTitle}
+                        subTitle={articleDetails.articleSubTitle}
                         content={articleDetails.articleContent}
                         articlePicUrl={articleDetails.articlePicUrl}
                     />

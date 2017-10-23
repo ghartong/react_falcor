@@ -15,6 +15,7 @@ class ArticleCard extends React.Component {
 
     render() {
         let title = this.props.title || 'no title provided'
+        let subTitle = this.props.subTitle || ''
         let content = this.props.content || 'no content provided'
         let articlePicUrl = this.props.articlePicUrl || '/static/placeholder.png'
 
@@ -39,7 +40,7 @@ class ArticleCard extends React.Component {
             <Paper style={paperStyle}>
                 <CardHeader
                     title={this.props.title}
-                    subtitle='Subtitle'
+                    subtitle={subTitle}
                     avatar='/static/avatar.jpg'
                 />
 
@@ -47,7 +48,7 @@ class ArticleCard extends React.Component {
                     <Card>
                         <CardMedia
                             overlay={<CardTitle title={title}
-                            subtitle='Overlay subtitle' />}>
+                            subtitle={subTitle} />}>
                             <img src={articlePicUrl} height="190" />
                         </CardMedia>
                     </Card>
