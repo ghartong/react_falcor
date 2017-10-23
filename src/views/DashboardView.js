@@ -26,12 +26,13 @@ class DashboardView extends React.Component {
 
         this.props.article.forEach((articleDetails, articleKey) => {
             const currentArticleJSX = (
-                <ListItem
-                    key={articleKey}
-                    leftAvatar={<img src='/static/placeholder.png' width='50' height='50' />}
-                    primaryText={articleDetails.articleTitle}
-                    secondaryText={articleDetails.articleContent}
-                />
+                <Link to={`/edit-article/${articleDetails['_id']}`} key={articleKey}>
+                    <ListItem
+                        leftAvatar={<img src='/static/placeholder.png' width='50' height='50' />}
+                        primaryText={articleDetails.articleTitle}
+                        secondaryText={articleDetails.articleContent}
+                    />
+                </Link>
             )
             articlesJSX.push(currentArticleJSX)
         })

@@ -9049,7 +9049,7 @@
 
 	var _Root2 = _interopRequireDefault(_Root);
 
-	var _configureStore = __webpack_require__(1121);
+	var _configureStore = __webpack_require__(1122);
 
 	var _configureStore2 = _interopRequireDefault(_configureStore);
 
@@ -36074,6 +36074,10 @@
 
 	var _AddArticleView2 = _interopRequireDefault(_AddArticleView);
 
+	var _EditArticleView = __webpack_require__(1121);
+
+	var _EditArticleView2 = _interopRequireDefault(_EditArticleView);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	exports.default = _react2.default.createElement(
@@ -36084,7 +36088,8 @@
 	    _react2.default.createElement(_reactRouter.Route, { component: _LogoutView2.default, path: 'logout', name: 'logout' }),
 	    _react2.default.createElement(_reactRouter.Route, { component: _DashboardView2.default, path: 'dashboard', name: 'dashboard' }),
 	    _react2.default.createElement(_reactRouter.Route, { component: _RegisterView2.default, path: 'register', name: 'register' }),
-	    _react2.default.createElement(_reactRouter.Route, { component: _AddArticleView2.default, path: 'add-article', name: 'add-article' })
+	    _react2.default.createElement(_reactRouter.Route, { component: _AddArticleView2.default, path: 'add-article', name: 'add-article' }),
+	    _react2.default.createElement(_reactRouter.Route, { component: _EditArticleView2.default, path: '/edit-article/:articleID', name: 'edit-article' })
 	);
 
 /***/ },
@@ -45904,9 +45909,21 @@
 	            payload: { response: response }
 	        };
 	    },
-	    pushNewArticle: function pushNewArticle(resonse) {
+	    pushNewArticle: function pushNewArticle(response) {
 	        return {
 	            type: 'PUSH_NEW_ARTICLE',
+	            payload: { response: response }
+	        };
+	    },
+	    editArticle: function editArticle(response) {
+	        return {
+	            type: 'EDIT_ARTICLE',
+	            payload: { response: response }
+	        };
+	    },
+	    deleteArticle: function deleteArticle(response) {
+	        return {
+	            type: 'DELETE_ARTICLE',
 	            payload: { response: response }
 	        };
 	    }
@@ -98411,12 +98428,15 @@
 	            var articlesJSX = [];
 
 	            this.props.article.forEach(function (articleDetails, articleKey) {
-	                var currentArticleJSX = _react2.default.createElement(_listItem2.default, {
-	                    key: articleKey,
-	                    leftAvatar: _react2.default.createElement('img', { src: '/static/placeholder.png', width: '50', height: '50' }),
-	                    primaryText: articleDetails.articleTitle,
-	                    secondaryText: articleDetails.articleContent
-	                });
+	                var currentArticleJSX = _react2.default.createElement(
+	                    _reactRouter.Link,
+	                    { to: '/edit-article/' + articleDetails['_id'], key: articleKey },
+	                    _react2.default.createElement(_listItem2.default, {
+	                        leftAvatar: _react2.default.createElement('img', { src: '/static/placeholder.png', width: '50', height: '50' }),
+	                        primaryText: articleDetails.articleTitle,
+	                        secondaryText: articleDetails.articleContent
+	                    })
+	                );
 	                articlesJSX.push(currentArticleJSX);
 	            });
 
@@ -98949,6 +98969,8 @@
 	    value: true
 	});
 
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(331);
@@ -98975,17 +98997,30 @@
 
 	        var _this = _possibleConstructorReturn(this, (WYSIWYGeditor.__proto__ || Object.getPrototypeOf(WYSIWYGeditor)).call(this, props));
 
-	        var initialEditorFromProps = _draftJs.EditorState.createWithContent(_draftJs.ContentState.createFromText(''));
+	        var initialEditorFromProps = void 0;
+
+	        if (typeof props.initialValue === 'undefined' || _typeof(props.initialValue) !== 'object') {
+	            initialEditorFromProps = _draftJs.EditorState.createWithContent(_draftJs.ContentState.createFromText(''));
+	        } else {
+	            var isInvalidObject = typeof props.initialValue.entityMap === 'undefined' || typeof props.initialValue.blocks === 'undefined';
+
+	            if (isInvalidObject) {
+	                alert('Invalid article-edit error provided, exit');
+	                return _possibleConstructorReturn(_this);
+	            }
+
+	            var draftBlocks = (0, _draftJs.convertFromRaw)(props.initialValue);
+	            var contentToConsume = _draftJs.ContentState.createFromBlockArray(draftBlocks);
+
+	            initialEditorFromProps = _draftJs.EditorState.createWithContent(contentToConsume);
+	        }
 
 	        _this.state = {
 	            editorState: initialEditorFromProps
 	        };
 
-	        _this.toggleInlineStyle = function (style) {
-	            return _this._toggleInlineStyle(style);
-	        };
-	        _this.toggleBlockType = function (type) {
-	            return _this._toggleBlockType(type);
+	        _this.focus = function () {
+	            return _this.refs['refWYSIWYGeditor'].focus();
 	        };
 
 	        _this.onChange = function (editorState) {
@@ -98996,11 +99031,16 @@
 	            _this.setState({ editorState: editorState });
 	        };
 
-	        _this.focus = function () {
-	            return _this.refs['refWYSIWYGeditor'].focus();
-	        };
 	        _this.handleKeyCommand = function (command) {
 	            return _this._handleKeyCommand(command);
+	        };
+
+	        _this.toggleInlineStyle = function (style) {
+	            return _this._toggleInlineStyle(style);
+	        };
+
+	        _this.toggleBlockType = function (type) {
+	            return _this._toggleBlockType(type);
 	        };
 	        return _this;
 	    }
@@ -118016,13 +118056,280 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	var _react = __webpack_require__(331);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _falcor = __webpack_require__(665);
+
+	var _falcor2 = _interopRequireDefault(_falcor);
+
+	var _reactRouter = __webpack_require__(543);
+
+	var _falcorModel = __webpack_require__(664);
+
+	var _falcorModel2 = _interopRequireDefault(_falcorModel);
+
+	var _reactRedux = __webpack_require__(505);
+
+	var _redux = __webpack_require__(521);
+
+	var _article = __webpack_require__(662);
+
+	var _article2 = _interopRequireDefault(_article);
+
+	var _WYSIWYGeditor = __webpack_require__(972);
+
+	var _WYSIWYGeditor2 = _interopRequireDefault(_WYSIWYGeditor);
+
+	var _draftJsExportHtml = __webpack_require__(1113);
+
+	var _raisedButton = __webpack_require__(660);
+
+	var _raisedButton2 = _interopRequireDefault(_raisedButton);
+
+	var _popover = __webpack_require__(855);
+
+	var _popover2 = _interopRequireDefault(_popover);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var mapStateToProps = function mapStateToProps(state) {
+	    return _extends({}, state);
+	};
+
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	    return {
+	        articleActions: (0, _redux.bindActionCreators)(_article2.default, dispatch)
+	    };
+	};
+
+	var EditArticleView = function (_React$Component) {
+	    _inherits(EditArticleView, _React$Component);
+
+	    function EditArticleView(props) {
+	        _classCallCheck(this, EditArticleView);
+
+	        var _this = _possibleConstructorReturn(this, (EditArticleView.__proto__ || Object.getPrototypeOf(EditArticleView)).call(this, props));
+
+	        _this._onDraftJSChange = _this._onDraftJSChange.bind(_this);
+	        _this._articleEditSubmit = _this._articleEditSubmit.bind(_this);
+	        _this._fetchArticleData = _this._fetchArticleData.bind(_this);
+	        _this._handleDeleteTap = _this._handleDeleteTap.bind(_this);
+	        _this._handleDeletion = _this._handleDeletion.bind(_this);
+	        _this._handleClosePopover = _this._handleClosePopover.bind(_this);
+
+	        _this.state = {
+	            articleFetchError: null,
+	            articleEditSuccess: null,
+	            editedArticleID: null,
+	            articleDetails: null,
+	            title: 'test',
+	            contentJSON: {},
+	            htmlContent: '',
+	            openDelete: false,
+	            deleteAnchorEl: null
+	        };
+	        return _this;
+	    }
+
+	    _createClass(EditArticleView, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
+	            this._fetchArticleData();
+	        }
+	    }, {
+	        key: '_fetchArticleData',
+	        value: function _fetchArticleData() {
+	            var articleID = this.props.params.articleID;
+
+	            if (typeof window !== 'undefined' && articleID) {
+	                var articleDetails = this.props.article.get(articleID);
+	                if (articleDetails) {
+	                    this.setState({
+	                        editedArticleID: articleID,
+	                        articleDetails: articleDetails
+	                    });
+	                } else {
+	                    this.setState({
+	                        articleFetchError: true
+	                    });
+	                }
+	            }
+	        }
+	    }, {
+	        key: '_onDraftJSChange',
+	        value: function _onDraftJSChange(contentJSON, contentState) {
+	            var htmlContent = (0, _draftJsExportHtml.stateToHTML)(contentState);
+	            this.setState({ contentJSON: contentJSON, htmlContent: htmlContent });
+	        }
+	    }, {
+	        key: '_articleEditSubmit',
+	        value: function _articleEditSubmit() {
+	            var currentArticleID = this.state.editedArticleID;
+	            var editedArticle = {
+	                _id: currentArticleID,
+	                articleTitle: this.state.title,
+	                articleContent: this.state.htmlContent,
+	                articleContentJSON: this.state.contentJSON
+	            };
+
+	            this.props.articleActions.editArticle(editedArticle);
+	            this.setState({ articleEditSuccess: true });
+	        }
+	    }, {
+	        key: '_handleDeleteTap',
+	        value: function _handleDeleteTap(e) {
+	            this.setState({
+	                openDelete: true,
+	                deleteAnchorEl: e.currentTarget
+	            });
+	        }
+	    }, {
+	        key: '_handleDeletion',
+	        value: function _handleDeletion() {
+	            var articleID = this.state.editedArticleID;
+	            this.props.articleActions.deleteArticle(articleID);
+
+	            this.setState({
+	                openDelete: false
+	            });
+
+	            this.props.history.pushState(null, '/dashboard');
+	        }
+	    }, {
+	        key: '_handleClosePopover',
+	        value: function _handleClosePopover() {
+	            this.setState({
+	                openDelete: false
+	            });
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            if (this.state.articleFetchError) {
+	                return _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    'Article not found (invalid article\'s ID ',
+	                    this.props.params.articleID,
+	                    ')'
+	                );
+	            } else if (!this.state.editedArticleID) {
+	                return _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    'Loading article details'
+	                );
+	            } else if (this.state.articleEditSuccess) {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { style: { height: '100%', width: '75%', margin: 'auto' } },
+	                    _react2.default.createElement(
+	                        'h3',
+	                        null,
+	                        'Your article has been edited successfully'
+	                    ),
+	                    _react2.default.createElement(
+	                        _reactRouter.Link,
+	                        { to: '/dashboard' },
+	                        _react2.default.createElement(_raisedButton2.default, {
+	                            secondary: true,
+	                            type: 'submit',
+	                            style: { margin: '10px auto', display: 'block', width: 150 },
+	                            label: 'Done'
+	                        })
+	                    )
+	                );
+	            }
+
+	            var initialWYSIWYGValue = this.state.articleDetails.articleContentJSON;
+
+	            return _react2.default.createElement(
+	                'div',
+	                { style: { height: '100%', width: '75%', margin: 'auto' } },
+	                _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    'Edit an existing article'
+	                ),
+	                _react2.default.createElement(_WYSIWYGeditor2.default, {
+	                    initialValue: initialWYSIWYGValue,
+	                    name: 'editarticle',
+	                    title: 'Edit an article',
+	                    onChangeTextJSON: this._onDraftJSChange
+	                }),
+	                _react2.default.createElement(_raisedButton2.default, {
+	                    onClick: this._articleEditSubmit,
+	                    secondary: true,
+	                    type: 'submit',
+	                    style: { margin: '10px auto', display: 'block', width: 150 },
+	                    label: 'Submit Edition'
+	                }),
+	                _react2.default.createElement(
+	                    'h1',
+	                    null,
+	                    'Delete this article permanently'
+	                ),
+	                _react2.default.createElement(_raisedButton2.default, {
+	                    onClick: this._handleDeleteTap,
+	                    label: 'Delete'
+	                }),
+	                _react2.default.createElement(
+	                    _popover2.default,
+	                    {
+	                        open: this.state.openDelete,
+	                        anchorEl: this.state.deleteAnchorEl,
+	                        anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
+	                        targetOrigin: { horizontal: 'left', vertical: 'top' },
+	                        onRequestClose: this._handleClosePopover
+	                    },
+	                    _react2.default.createElement(
+	                        'div',
+	                        { style: { padding: 20 } },
+	                        _react2.default.createElement(_raisedButton2.default, {
+	                            onClick: this._handleDeletion,
+	                            primary: true,
+	                            label: 'Click to permanently delete'
+	                        })
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+
+	    return EditArticleView;
+	}(_react2.default.Component);
+
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(EditArticleView);
+
+/***/ },
+/* 1122 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
 	exports.default = configureStore;
 
-	var _reducers = __webpack_require__(1122);
+	var _reducers = __webpack_require__(1123);
 
 	var _reducers2 = _interopRequireDefault(_reducers);
 
-	var _reduxThunk = __webpack_require__(1125);
+	var _reduxThunk = __webpack_require__(1126);
 
 	var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
@@ -118044,7 +118351,7 @@
 	}
 
 /***/ },
-/* 1122 */
+/* 1123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -118057,7 +118364,7 @@
 
 	var _reduxSimpleRouter = __webpack_require__(503);
 
-	var _article = __webpack_require__(1123);
+	var _article = __webpack_require__(1124);
 
 	var _article2 = _interopRequireDefault(_article);
 
@@ -118069,7 +118376,7 @@
 	});
 
 /***/ },
-/* 1123 */
+/* 1124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -118078,7 +118385,7 @@
 	    value: true
 	});
 
-	var _mapHelpers = __webpack_require__(1124);
+	var _mapHelpers = __webpack_require__(1125);
 
 	var _mapHelpers2 = _interopRequireDefault(_mapHelpers);
 
@@ -118095,8 +118402,14 @@
 	            var articlesList = action.payload.response;
 	            return _mapHelpers2.default.addMultipleItems(state, articlesList);
 	        case 'PUSH_NEW_ARTICLE':
-	            var newArticleObject = action.paylod.response;
+	            var newArticleObject = action.payload.response;
 	            return _mapHelpers2.default.addItem(state, newArticleObject['_id'], newArticleObject);
+	        case 'EDIT_ARTICLE':
+	            var editedArticleObject = action.payload.response;
+	            return _mapHelpers2.default.addItem(state, editedArticleObject['_id'], editedArticleObject);
+	        case 'DELETE_ARTICLE':
+	            var deleteArticleId = action.payload.response;
+	            return _mapHelpers2.default.deleteItem(state, deleteArticleId);
 	        default:
 	            return state;
 	    }
@@ -118105,7 +118418,7 @@
 	exports.default = article;
 
 /***/ },
-/* 1124 */
+/* 1125 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -118158,7 +118471,7 @@
 	};
 
 /***/ },
-/* 1125 */
+/* 1126 */
 /***/ function(module, exports) {
 
 	'use strict';
