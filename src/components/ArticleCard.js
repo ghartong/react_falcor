@@ -16,6 +16,7 @@ class ArticleCard extends React.Component {
     render() {
         let title = this.props.title || 'no title provided'
         let content = this.props.content || 'no content provided'
+        let articlePicUrl = this.props.articlePicUrl || '/static/placeholder.png'
 
         const paperStyle = {
             padding: 10,
@@ -47,7 +48,7 @@ class ArticleCard extends React.Component {
                         <CardMedia
                             overlay={<CardTitle title={title}
                             subtitle='Overlay subtitle' />}>
-                            <img src='/static/placeholder.png' height="190" />
+                            <img src={articlePicUrl} height="190" />
                         </CardMedia>
                     </Card>
                 </div>

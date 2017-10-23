@@ -16,6 +16,7 @@ import * as hist from 'history'
 import rootReducer from '../src/reducers'
 import reactRoutes from '../src/routes'
 import fetchServerSide from './fetchServerSide'
+import s3router from 'react-s3-uploader/s3router'
 
 const app = express()
 
@@ -23,6 +24,14 @@ app.server = http.createServer(app)
 
 // CORS - 3rd party middleware
 app.use(cors())
+
+app.use('/s3', s3router ({
+    bucket: process.env.AWS_BUCKET_NAME,
+    region: process.env.AWS_REGION_NAME,
+    signatureVersion: 'v4',
+    headers: {'Access-Control-Allow-Origin': '*'},
+    ACL: 'public-read'
+}))
 
 // This is required by falcor-express middleware to work correctly with falcor-browser
 app.use(bodyParser.json({extended: false}))
