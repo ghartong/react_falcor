@@ -47081,7 +47081,7 @@
 	                            case 2:
 	                                articlesLength = _context.sent;
 	                                _context.next = 5;
-	                                return _falcorModel2.default.get(['articles', { from: 0, to: articlesLength - 1 }, ['_id', 'articleTitle', 'articleContent', 'articleContentJSON', 'articlePicUrl']]).then(function (articlesResponse) {
+	                                return _falcorModel2.default.get(['articles', { from: 0, to: articlesLength - 1 }, ['_id', 'articleTitle', 'articleSubTitle', 'articleContent', 'articleContentJSON', 'articlePicUrl']]).then(function (articlesResponse) {
 	                                    articlesResponse.json.articles;
 	                                }).catch(function (e) {
 	                                    return 500;
@@ -47126,6 +47126,7 @@
 	                    { key: articleKey },
 	                    _react2.default.createElement(_ArticleCard2.default, {
 	                        title: articleDetails.articleTitle,
+	                        subTitle: articleDetails.articleSubTitle,
 	                        content: articleDetails.articleContent,
 	                        articlePicUrl: articleDetails.articlePicUrl
 	                    })
@@ -73661,6 +73662,7 @@
 	        key: 'render',
 	        value: function render() {
 	            var title = this.props.title || 'no title provided';
+	            var subTitle = this.props.subTitle || '';
 	            var content = this.props.content || 'no content provided';
 	            var articlePicUrl = this.props.articlePicUrl || '/static/placeholder.png';
 
@@ -73686,7 +73688,7 @@
 	                { style: paperStyle },
 	                _react2.default.createElement(_card.CardHeader, {
 	                    title: this.props.title,
-	                    subtitle: 'Subtitle',
+	                    subtitle: subTitle,
 	                    avatar: '/static/avatar.jpg'
 	                }),
 	                _react2.default.createElement(
@@ -73699,7 +73701,7 @@
 	                            _card.CardMedia,
 	                            {
 	                                overlay: _react2.default.createElement(_card.CardTitle, { title: title,
-	                                    subtitle: 'Overlay subtitle' }) },
+	                                    subtitle: subTitle }) },
 	                            _react2.default.createElement('img', { src: articlePicUrl, height: '190' })
 	                        )
 	                    )
@@ -98522,13 +98524,15 @@
 	            this.props.article.forEach(function (articleDetails, articleKey) {
 	                var articlePicUrl = articleDetails.articlePicUrl || '/static/placeholder.png';
 
+	                var articleContentPlainText = articleDetails.articleContent.replace('/</?[^>]+(>|$)/g', '');
+
 	                var currentArticleJSX = _react2.default.createElement(
 	                    _reactRouter.Link,
 	                    { to: '/edit-article/' + articleDetails['_id'], key: articleKey },
 	                    _react2.default.createElement(_listItem2.default, {
 	                        leftAvatar: _react2.default.createElement('img', { src: articlePicUrl, width: '50', height: '50' }),
 	                        primaryText: articleDetails.articleTitle,
-	                        secondaryText: articleDetails.articleContent
+	                        secondaryText: articleContentPlainText
 	                    })
 	                );
 	                articlesJSX.push(currentArticleJSX);
